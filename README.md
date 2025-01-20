@@ -13,7 +13,8 @@ docker build -t hikcheck:v0.99 .
 docker run -d --name hikcheck -v /home/hikcheck/hik.env:/app/.env hikcheck:v0.99
 ```
 ## 不同项目迁移
-### 打包镜像，并上传至云盘，提取到下载链接，在setup.sh脚本中修改
+### 修改main.py中的ipstart的值，不需要可删除，重新构建镜像
+### 打包镜像并上传至云盘，提取到下载链接，在setup.sh脚本中修改IMAGE_URL
 ```bash
 docker save -o hikcheck_v0.99.tar hikcheck:v0.99
 ```
