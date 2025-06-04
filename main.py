@@ -171,7 +171,7 @@ def check_channel_status(UserID, channum, m_strIpparaCfg, strPicCfg):
 
 def send_dingtalk_message(message):
     # 钉钉机器人webhook地址
-    webhook_url = "https://oapi.dingtalk.com/robot/send?access_token=8d92ca1277b63d4699702c234d1ae9b50baecad0a318390b7c9173013bf5b07e"
+    webhook_url = "https://oapi.dingtalk.com/robot/send?access_token=xxxxx"
 
     # 构建请求头部
     headers = {
