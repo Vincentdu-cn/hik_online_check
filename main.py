@@ -16,7 +16,8 @@ def import_ENV():
         'ip': os.getenv('DEV_IP'),
         'port': int(os.getenv('DEV_PORT')),
         'username': os.getenv('DEV_USERNAME'),
-        'password': os.getenv('DEV_PASSWORD')
+        'password': os.getenv('DEV_PASSWORD'),
+        'dingding_token': os.getenv('DD_TOKEN')
     }
     # 打印环境变量以验证（仅用于调试）
     # print(f"【print调试】UserID: {info}")
@@ -31,7 +32,7 @@ def login_v40(ip, port, username, password):
     @param ip:
     @param port:
     @param username:
-    @param password:
+    @param :
     @return:
     """
     # 用户注册设备
@@ -169,9 +170,9 @@ def check_channel_status(UserID, channum, m_strIpparaCfg, strPicCfg):
     except Exception as e:
         print(f"【print】第{channum}个通道Caught an Exception: {e}")
 
-def send_dingtalk_message(message):
+def send_dingtalk_message(message, token):
     # 钉钉机器人webhook地址
-    webhook_url = "https://oapi.dingtalk.com/robot/send?access_token=xxxxx"
+    webhook_url = f"https://oapi.dingtalk.com/robot/send?access_token={token}"
 
     # 构建请求头部
     headers = {
@@ -239,7 +240,7 @@ if __name__ == '__main__':
 
     # 输出结果
     print("【print】\n", result)
-    send_dingtalk_message(result)
+    send_dingtalk_message(result, dev_info['dingding_token'])
 
     # 注销用户，退出程序时调用
     if sdk.NET_DVR_Logout(UserID):
