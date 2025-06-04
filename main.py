@@ -7,8 +7,8 @@ import requests
 from dotenv import load_dotenv
 from HCNetSDK import *
 
-def import_ENV():
 
+def import_ENV():
     load_dotenv()
     # 读取环境变量
     info = {
@@ -25,6 +25,7 @@ def import_ENV():
 
 
 offline_channels = []
+
 
 def login_v40(ip, port, username, password):
     """
@@ -54,7 +55,8 @@ def login_v40(ip, port, username, password):
         print("【print】Login failed, error code: %d" % sdk.NET_DVR_GetLastError())
         sdk.NET_DVR_Cleanup()
     else:
-        print('【print】' + ip + '登录成功，设备序列号：%s' % str(struDeviceInfoV40.struDeviceV30.sSerialNumber, encoding="gbk"))
+        print('【print】' + ip + '登录成功，设备序列号：%s' % str(struDeviceInfoV40.struDeviceV30.sSerialNumber,
+                                                              encoding="gbk"))
     return UserID
 
 
@@ -69,6 +71,7 @@ def SetSDKInitCfg():
     sdk.NET_DVR_SetSDKInitCfg(2, byref(sdk_ComPath))
     sdk.NET_DVR_SetSDKInitCfg(3, create_string_buffer(strPath + b'/libcrypto.so.1.1'))
     sdk.NET_DVR_SetSDKInitCfg(4, create_string_buffer(strPath + b'/libssl.so.1.1'))
+
 
 def get_device_status(UserId):
     """
@@ -170,6 +173,7 @@ def check_channel_status(UserID, channum, m_strIpparaCfg, strPicCfg):
     except Exception as e:
         print(f"【print】第{channum}个通道Caught an Exception: {e}")
 
+
 def send_dingtalk_message(message, token):
     # 钉钉机器人webhook地址
     webhook_url = f"https://oapi.dingtalk.com/robot/send?access_token={token}"
@@ -209,7 +213,6 @@ def output(project, offline):
     # print(result)
 
 
-
 if __name__ == '__main__':
 
     # 加载库,先加载依赖库
@@ -232,15 +235,18 @@ if __name__ == '__main__':
     dev_info = import_ENV()
     # 登录设备
     UserID = login_v40(dev_info['ip'], dev_info['port'], dev_info['username'], dev_info['password'])
-    get_device_status(UserID)   # 获取设备在线状态
+    if UserID < 0:
+        send_dingtalk_message(f"项目名称：{dev_info['project']}\n设备登陆失败！", dev_info['dingding_token'])
+    else:
+        get_device_status(UserID)  # 获取设备在线状态
 
-    getIPChannelInfo_async(UserID)
+        getIPChannelInfo_async(UserID)
 
-    result = output(dev_info['project'], offline_channels)
+        result = output(dev_info['project'], offline_channels)
 
-    # 输出结果
-    print("【print】\n", result)
-    send_dingtalk_message(result, dev_info['dingding_token'])
+        # 输出结果
+        print("【print】\n", result)
+        send_dingtalk_message(result, dev_info['dingding_token'])
 
     # 注销用户，退出程序时调用
     if sdk.NET_DVR_Logout(UserID):
