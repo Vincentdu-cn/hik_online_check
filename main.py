@@ -127,8 +127,6 @@ def check_channel_status(UserID, channum, m_strIpparaCfg, strPicCfg):
     """
     pInt = c_int(0)
     offline = {}
-    # ip起始值
-    ipstart = '172.16'
     b_GetPicCfg = sdk.NET_DVR_GetDVRConfig(
         UserID, NET_DVR_GET_PICCFG_V40, channum, byref(strPicCfg), sizeof(strPicCfg), byref(pInt)
     )
@@ -146,8 +144,8 @@ def check_channel_status(UserID, channum, m_strIpparaCfg, strPicCfg):
                     )
             )
             # print("channel:", channel)
-            ip_addr = ''
-            name = ''
+            ip_addr = 0
+            name = 0
             if channel > 0:
                 ip_addr = bytes(
                     m_strIpparaCfg.struIPDevInfo[channel - 1].struIP.sIpV4
@@ -160,7 +158,7 @@ def check_channel_status(UserID, channum, m_strIpparaCfg, strPicCfg):
             if (
                     m_strIpparaCfg.struStreamMode[channum - m_strIpparaCfg.dwStartDChan]
                             .uGetStream.struChanInfo.byEnable
-                    == 0 and ip_addr.startswith(ipstart)
+                    == 0 and ip_addr.startswith('172.16')
             ):
                 # print("【print调试】IP通道", channum, "在线")
                 # print("【print调试】IP通道", channum, "不在线")
@@ -173,7 +171,7 @@ def check_channel_status(UserID, channum, m_strIpparaCfg, strPicCfg):
 
 def send_dingtalk_message(message):
     # 钉钉机器人webhook地址
-    webhook_url = "https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    webhook_url = "https://oapi.dingtalk.com/robot/send?access_token=8d92ca1277b63d4699702c234d1ae9b50baecad0a318390b7c9173013bf5b07e"
 
     # 构建请求头部
     headers = {
